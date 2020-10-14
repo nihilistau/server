@@ -66,12 +66,12 @@ class NFCGateClientHandler(socketserver.StreamRequestHandler):
             data2 = [int(x) for x in data] # copy of data
             
             for x in range(0,len(data)):
-                if(data[x] == 0x9F and data[x+1]==0x66):            #TTQ  - (byte 2, bit 7)
+                if(data[x] == 0x9F and data[x+1] == 0x66):          #TTQ  - (byte 2, bit 7)
                     print("!! TTQ detected")
                     ttq = True                                      #It will check GET PROCESSING
                     break
                 
-                if(ttq and data[x]==0x80 and data[x+1]==0xa8):      #TTQ  - (byte 2, bit 7) in GET PROCESSING
+                if(ttq and data[x]==0x80 and data[x+1] == 0xa8):    #TTQ  - (byte 2, bit 7) in GET PROCESSING
                     print("!! Modifing GET PROCESSING if necessary")
                     ttq = False
                     if(data[x+8] & (1<<(7-1))):                     # Modify bit 7 in byte 2 to "0" if it is "1"

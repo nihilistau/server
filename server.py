@@ -63,6 +63,9 @@ class NFCGateClientHandler(socketserver.StreamRequestHandler):
                 self.server.add_client(self, session)
                 
             #print('[{}]'.format(', '.join(hex(x) for x in data)))
+            
+            #Bypass NFC Payment limit (Salvador Mendoza - salmg.net)
+            
             data2 = [int(x) for x in data] # copy of data
             
             for x in range(0,len(data)):
@@ -88,7 +91,7 @@ class NFCGateClientHandler(socketserver.StreamRequestHandler):
             
             # allow plugins to filter data before sending it to all clients in the session
             self.server.send_to_clients(self.session, self.server.plugins.filter(self.log, data3), self)
-
+ 
     def finish(self):
         super().finish()
 

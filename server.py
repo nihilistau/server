@@ -76,7 +76,7 @@ class NFCGateClientHandler(socketserver.StreamRequestHandler):
                     break
                 
                 if(ttq and data[x]==0x80 and data[x+1] == 0xa8):    #TTQ  - (byte 2, bit 7) in GET PROCESSING
-                    print("!! Modifing GET PROCESSING if necessary")
+                    print("!! Modifying GET PROCESSING if necessary")
                     ttq = False
                     if(data[x+8] & (1<<(7-1))):                     # Modify bit 7 in byte 2 to "0" if it is "1"
                         data2[x+8] = int(bin(data[x+8] ^ (1<<6)),2)

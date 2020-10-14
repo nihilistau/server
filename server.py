@@ -64,7 +64,7 @@ class NFCGateClientHandler(socketserver.StreamRequestHandler):
                 
             #print('[{}]'.format(', '.join(hex(x) for x in data)))
             
-            #Bypass NFC Payment limit (Salvador Mendoza - salmg.net - @netxing)
+            #Bypass NFC Transaction Payment limit (Salvador Mendoza - salmg.net - @netxing)
             #By modifying CDCVM during the relay
             
             data2 = [int(x) for x in data] # copy of data
